@@ -74,6 +74,7 @@ UserProgKernel::~UserProgKernel()
 {
     delete fileSystem;
     delete machine;
+    delete swap;
 #ifdef FILESYS
     delete synchDisk;
 #endif

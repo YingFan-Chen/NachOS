@@ -89,6 +89,8 @@ Machine::Machine(bool debug)
 Machine::~Machine()
 {
     delete [] mainMemory;
+    delete [] FrameTable;
+    delete [] SwapTable;
     if (tlb != NULL)
         delete [] tlb;
 }

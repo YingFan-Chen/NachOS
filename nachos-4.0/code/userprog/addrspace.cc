@@ -99,11 +99,13 @@ bool AddrSpace::Load(char *fileName) {
             + UserStackSize;	// we need to increase the size
                                 // to leave room for the stack
     numPages = divRoundUp(size, PageSize);
-    size = numPages * PageSize;
+    kernel->machine->pageTableSize = numPages;
     pageTable = new TranslationEntry[numPages];
+    kernel->machine->pageTable = pageTable;
+    size = numPages * PageSize;
 
     DEBUG(dbgAddr, "Initializing address space: " << numPages << ", " << size);
-    
+	  
     char *buffer = new char[size];
     if (noffH.code.size > 0) {
         DEBUG(dbgAddr, "Initializing code segment.");
@@ -118,14 +120,17 @@ bool AddrSpace::Load(char *fileName) {
         executable->ReadAt(&buffer[noffH.initData.virtualAddr],noffH.initData.size, noffH.initData.inFileAddr);
     }
 
-    for(int i = 0, j = 0; i < numPages; i++){
+    for(unsigned int i = 0, j = 0; i < numPages; i++){
         while(j < NumSectors and kernel->machine->SwapTable[j].valid == TRUE)
             j ++;
+	DEBUG(dbgAddr, "i = " << i << ", j = " << j);
+	
         kernel->swap->WriteSector(j, &buffer[i * PageSize]);
         kernel->machine->SwapTable[j].valid = TRUE;
         kernel->machine->SwapTable[j].addrSpace = kernel->currentThread->space;
-        kernel->machine->SwapTable[j].vpn = i;
+	kernel->machine->SwapTable[j].vpn = i;
         pageTable[i].virtualPage = j;
+	DEBUG(dbgAddr, "finish");
     }
 
     delete []buffer;
@@ -203,7 +208,7 @@ AddrSpace::InitRegisters()
 //----------------------------------------------------------------------
 
 void AddrSpace::SaveState() 
-{
+{	
         pageTable=kernel->machine->pageTable;
         numPages=kernel->machine->pageTableSize;
 }

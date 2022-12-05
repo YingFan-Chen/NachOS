@@ -127,7 +127,7 @@ Thread::Fork(VoidFunctionPtr func, void *arg)
 
 void
 Thread::CheckOverflow()
-{
+{	
     if (stack != NULL) {
 #ifdef HPUX			// Stacks grow upward on the Snakes
 	ASSERT(stack[StackSize - 1] == STACK_FENCEPOST);
