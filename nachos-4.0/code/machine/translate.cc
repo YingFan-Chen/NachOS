@@ -238,11 +238,11 @@ Machine::Translate(int virtAddr, int* physAddr, int size, bool writing)
 					minTime = kernel->machine->FrameTable[j].inTime;
 				}
 			}
-			AddrSpace *victimSpace = kernel->machine->FrameTable[victim].addrspace;
+			AddrSpace *victimSpace = kernel->machine->FrameTable[victim].addrSpace;
 			int victimVPN = kernel->machine->FrameTable[victim].vpn;
 			victimSpace->pageTable[victimVPN].valid = FALSE;
-			kernel->swap->writeSector(
-				victimSpace->pageTable[victimVPN],
+			kernel->swap->WriteSector(
+				victimSpace->pageTable[victimVPN].virtualPage,
 				&(kernel->machine->mainMemory[PageSize * victim]));
 			
 			//Swap in
