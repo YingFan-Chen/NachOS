@@ -123,14 +123,14 @@ bool AddrSpace::Load(char *fileName) {
     for(unsigned int i = 0, j = 0; i < numPages; i++){
         while(j < NumSectors and kernel->machine->SwapTable[j].valid == TRUE)
             j ++;
-	DEBUG(dbgAddr, "i = " << i << ", j = " << j);
+	    DEBUG(dbgAddr, "i = " << i << ", j = " << j);
 	
         kernel->swap->WriteSector(j, &buffer[i * PageSize]);
         kernel->machine->SwapTable[j].valid = TRUE;
         kernel->machine->SwapTable[j].addrSpace = kernel->currentThread->space;
-	kernel->machine->SwapTable[j].vpn = i;
+	    kernel->machine->SwapTable[j].vpn = i;
         pageTable[i].virtualPage = j;
-	DEBUG(dbgAddr, "finish");
+	    DEBUG(dbgAddr, "finish");
     }
 
     delete []buffer;
